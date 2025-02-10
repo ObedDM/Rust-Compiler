@@ -1,3 +1,97 @@
+import { LineEdit, Button } from "std-widgets.slint";
+
 export component AppWindow inherits Window {
+
+    callback is_correct();
+
+    min-width: 400px;
+    max-width: 1920px;
+
+    min-height: 400px;
+    max-height: 1080px;
+
+    GridLayout {
+        spacing: 20px;
+        padding: 50px;
+
+        Row {
+            Text {
+                text: "aaaa";
+                font-size: 20px;
+                font-weight: 750;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        Row {
+            VerticalLayout {
+                Text {
+                    text: "input: ";
+                    font-size: 15px;
+                    font-weight: 500;
+                    horizontal-alignment: left;
+                }
+
+                Rectangle {
+                    background: green;
+                    border-color: yellowgreen;
+                    border-radius: 4px;
+                    width: root.width * 0.8;
+                    height: 60px;
+                    
+                    data := LineEdit {
+                        placeholder-text: "[A-Za-z]\\.[a-z$!?_]*";
+                        width: parent.width;
+
+                    }
+                }
+            }
+        }
+    
+        Row {
+            VerticalLayout {
+                Text {
+                    text: "output: ";
+                    font-size: 15px;
+                    font-weight: 500;
+                    horizontal-alignment: left;
+                }
+
+                Rectangle {
+                    background: burlywood;
+                    border-color: blueviolet;
+                    border-radius: 4px;
+                    width: root.width * 0.8;
+                    height: 60px;
+
+                    Text {
+                        text: data.text;
+                        color: white;
+                        font-size: 15px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+
+        Row {
+            Rectangle {
+                background: gold;
+                border-color: yellow;
+                border-radius: 4px;
+                width: root.width * 0.65;
+                height: 60px;
+
+                Button {
+                    text: "Try";
+                    width: parent.width * 0.8;
+                    height: parent.height * 0.8;
+
+                    clicked => {root.is_correct()}
+                }
+            }
+        }
+    }
 
 }

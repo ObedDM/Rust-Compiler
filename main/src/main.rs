@@ -6,6 +6,10 @@ slint::include_modules!();
 fn main() -> Result<(), slint::PlatformError> {
     let window: AppWindow = AppWindow::new()?;
     let window_weak = window.as_weak();
+
+    window.on_is_correct(|| {
+        println!("e");
+    });
      
     let regex: &str = "[A-Za-z]\\.[a-z$!?_]*";
     let re = Regex::new(regex).unwrap();

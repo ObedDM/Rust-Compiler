@@ -1,25 +1,34 @@
 use regex::Regex;
 use std::io;
 
-fn main() {
-     
-    let re: &str = "[A-Za-z]\\.[a-z$!?_]*";
-    println!("{}",re);
+slint::include_modules!();
 
-    let var = Regex::new(re); //Object class Regex
-    let a= var.unwrap(); //unwrap method
+fn find_out(user_input: String) -> String {
+    let regex: &str = "^[A-Za-z]\\.[a-z$!?_]*$";
+    let re = Regex::new(regex).unwrap();
 
-    let mut entrada = String::new();
-    io::stdin().read_line(&mut entrada).unwrap();
-    println!("{}",entrada);
-    let entrada = entrada.trim();
-
-    if a.is_match(entrada)
+    if re.is_match(user_input.trim())
     {
-        println!("correcto ayuuuu");
+        return "Valid input".to_string();
     }
     else
     {
-        println!("NO, INCORRECTO");
+        return "Invalid input".to_string();
     }
 }
+
+fn main() -> Result<(), slint::PlatformError> {
+    let window: AppWindow = AppWindow::new()?;
+    let window_weak = window.as_weak();
+
+    window.on_is_correct(move | user_input | {
+        let window = window_weak.unwrap();
+        
+        let result: String = find_out(user_input.to_string());   
+        window.set_data_out(result.into());
+    });
+    
+    window.run();
+    Ok(())
+}
+

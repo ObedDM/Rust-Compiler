@@ -1,20 +1,23 @@
 use regex::Regex;
 use std::io;
 
-fn main() {
+slint::include_modules!();
+
+fn main() -> Result<(), slint::PlatformError> {
+    let window: AppWindow = AppWindow::new()?;
+    let window_weak = window.as_weak();
      
-    let re: &str = "[A-Za-z]\\.[a-z$!?_]*";
-    println!("{}",re);
+    let regex: &str = "[A-Za-z]\\.[a-z$!?_]*";
+    let re = Regex::new(regex).unwrap();
 
-    let var = Regex::new(re); //Object class Regex
-    let a= var.unwrap(); //unwrap method
+    println!("Enter a word: ");
 
-    let mut entrada = String::new();
-    io::stdin().read_line(&mut entrada).unwrap();
-    println!("{}",entrada);
-    let entrada = entrada.trim();
+    let mut user_input = String::new();
+    io::stdin().read_line(&mut user_input).unwrap();
+    
+    let user_input = user_input.trim();
 
-    if a.is_match(entrada)
+    if re.is_match(user_input)
     {
         println!("correcto ayuuuu");
     }
@@ -22,4 +25,8 @@ fn main() {
     {
         println!("NO, INCORRECTO");
     }
+
+    window.run();
+    Ok(())
 }
+

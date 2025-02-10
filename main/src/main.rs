@@ -4,7 +4,7 @@ use std::io;
 slint::include_modules!();
 
 fn find_out(user_input: String) -> String {
-    let regex: &str = "[A-Za-z]\\.[a-z$!?_]*";
+    let regex: &str = "^[A-Za-z]\\.[a-z$!?_]*$";
     let re = Regex::new(regex).unwrap();
 
     if re.is_match(user_input.trim())

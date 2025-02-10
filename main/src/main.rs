@@ -3,25 +3,14 @@ use std::io;
 
 slint::include_modules!();
 
-fn main() -> Result<(), slint::PlatformError> {
-    let window: AppWindow = AppWindow::new()?;
-    let window_weak = window.as_weak();
-
-    window.on_is_correct(|| {
-        println!("e");
-    });
-     
+fn find_out(user_input: String)
+{
     let regex: &str = "[A-Za-z]\\.[a-z$!?_]*";
     let re = Regex::new(regex).unwrap();
 
-    println!("Enter a word: ");
+    println!("{}",user_input);
 
-    let mut user_input = String::new();
-    io::stdin().read_line(&mut user_input).unwrap();
-    
-    let user_input = user_input.trim();
-
-    if re.is_match(user_input)
+    if re.is_match(user_input.trim())
     {
         println!("correcto ayuuuu");
     }
@@ -29,7 +18,19 @@ fn main() -> Result<(), slint::PlatformError> {
     {
         println!("NO, INCORRECTO");
     }
+}
 
+fn main() -> Result<(), slint::PlatformError> {
+    let window: AppWindow = AppWindow::new()?;
+    let window_weak = window.as_weak();
+
+    window.on_is_correct(move | user_input | {
+        let window = window_weak.unwrap();
+        
+        find_out(user_input.to_string());   
+        println!("Texto ingresado {}", user_input);
+    });
+    
     window.run();
     Ok(())
 }

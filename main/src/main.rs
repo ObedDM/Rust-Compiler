@@ -25,7 +25,7 @@ fn main() -> Result<(), slint::PlatformError> {
         let window = window_weak.unwrap();
         
         let result: String = find_out(user_input.to_string());   
-        println!("{}", result.trim());
+        window.set_data_out(result.into());
     });
     
     window.run();

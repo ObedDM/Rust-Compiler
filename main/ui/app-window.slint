@@ -1,7 +1,7 @@
 import { LineEdit, Button } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
-    property <string> data: "";
+    in property <string> data-out: "";
 
     callback is_correct(string);
 
@@ -75,7 +75,7 @@ export component AppWindow inherits Window {
                     height: 60px;
 
                     output := Text {
-                        text: "placeholder";
+                        text: root.data-out;
                         font-size: 15px;
                         font-weight: 500;
                         width: parent.width * 0.9;

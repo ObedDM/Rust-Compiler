@@ -3,20 +3,17 @@ use std::io;
 
 slint::include_modules!();
 
-fn find_out(user_input: String)
-{
+fn find_out(user_input: String) -> String {
     let regex: &str = "[A-Za-z]\\.[a-z$!?_]*";
     let re = Regex::new(regex).unwrap();
 
-    println!("{}",user_input);
-
     if re.is_match(user_input.trim())
     {
-        println!("correcto ayuuuu");
+        return "Valid input".to_string();
     }
     else
     {
-        println!("NO, INCORRECTO");
+        return "Invalid input".to_string();
     }
 }
 
@@ -27,8 +24,8 @@ fn main() -> Result<(), slint::PlatformError> {
     window.on_is_correct(move | user_input | {
         let window = window_weak.unwrap();
         
-        find_out(user_input.to_string());   
-        println!("Texto ingresado {}", user_input);
+        let result: String = find_out(user_input.to_string());   
+        println!("{}", result.trim());
     });
     
     window.run();

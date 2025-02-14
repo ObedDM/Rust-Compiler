@@ -32,6 +32,16 @@ fn is_valid_type(type_input: &str) -> bool {
     }
 }
 
+fn create_char_set(string: &str) -> IndexSet<char> {
+    let mut string_set: IndexSet<char> = IndexSet::new();
+
+    for c in string.chars() {
+        string_set.insert(c);
+    }
+
+    return string_set;
+}
+
 fn main() {
     /*let window: AppWindow = AppWindow::new()?;
     let window_weak = window.as_weak();
@@ -45,5 +55,21 @@ fn main() {
     
     window.run();
     Ok(())*/
+
+    /*let mut symbol_table: HashMap<char, &str> = HashMap::new();
+
+    let mut tokens: HashMap<&str, Vec<&str>> = HashMap::new();
+
+    tokens.insert("DEL", vec![";"]);
+    tokens.insert("OPA", vec!["+", "-", "*", "/"]);*/
+
+    let test_string: &str = "!s s.test;";
+
+    let string_set = create_char_set(test_string);
+
+    for c in string_set.iter() {
+        print!("{}", c);
+    }
+    
 }
 

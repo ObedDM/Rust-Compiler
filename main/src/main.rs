@@ -42,7 +42,7 @@ fn create_char_set(string: &str) -> IndexSet<char> {
     return string_set;
 }
 
-fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> bool {
+fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> (bool, String) {
     for (token_type, lex_list) in token_map {
 
         //Checks for possible "end-lexeme" indicating characters; add to the condition as needed
@@ -50,12 +50,12 @@ fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> bool {
             
             //Checks if current character represents the end of a lexeme
             if lex_list.contains(&c) {
-                return true;
+                return (true, token_type.to_string());
             }
         }
     }
 
-    return false;
+    return (false, "".to_string());
 }
 
 fn main() {
@@ -97,18 +97,25 @@ fn main() {
     tokens.insert("SEP", vec![' ']);
 
     //Sample of a line to be processed
-    let test_string: &str = "!s s.test;";
+    let test_string: &str = "!s s.test = \"hello\";";
  
     
     let mut string_set: IndexSet<char> = IndexSet::new();
 
+    println!("lexemes:\n");
+
     //Iterates over the string (line sample)
     for c in test_string.chars() {
         
-        let lexeme_end: bool = is_end_of_lex(c, &tokens);
+        let (lexeme_end, token_type) = is_end_of_lex(c, &tokens);
+        
+        if (lexeme_end == true) && (token_type == "SEP") {
+            println!();
+        }
 
-        println!("character: {} represents end of lexemne: {}", c, lexeme_end);
-
+        else {
+            print!("{}", c);
+        }
     }
 
 

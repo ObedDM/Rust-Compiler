@@ -4,7 +4,7 @@ use regex::Regex;
 
 slint::include_modules!();
 
-fn is_valid_identifier(identifier: &str) -> bool {
+/*fn is_valid_identifier(identifier: &str) -> bool {
     let regex: &str = "^[A-Za-z]\\.[a-z$!?_]*$";
     let re = Regex::new(regex).unwrap();
 
@@ -30,7 +30,7 @@ fn is_valid_type(type_input: &str) -> bool {
     {
         return false;
     }
-}
+}*/
 
 fn create_char_set(string: &str) -> IndexSet<char> {
     let mut string_set: IndexSet<char> = IndexSet::new();
@@ -97,10 +97,11 @@ fn main() {
     tokens.insert("SPACE", vec![' ']);
 
     //Sample of a line to be processed
-    let test_string: &str = "!s s.test, s.hola, x.bye;";
+    let test_string: &str = "!i = i.num + 444;";
  
-    
+    let mut lexeme_type: Vec<&str> = vec![];
     let mut lexeme_set: IndexSet<String> = IndexSet::new();
+
     let mut lexeme: String = String::new();
 
     //println!("lexemes:\n");
@@ -137,10 +138,25 @@ fn main() {
     
     print!("lexemes:\n\n{:?}\n\n", lexeme_set);
 
-    let regex_identifier: Regex = Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap();
-    let regex_stringtype: Regex = Regex::new("^\".*\"$").unwrap();
-    let regex_inttype: Regex = Regex::new("^[0-9]+$").unwrap();
-    let regex_floattype: Regex = Regex::new("^[0-9]+.[0-9]+$").unwrap();
+
+    let valid_regex_type_match: HashMap<&str, Regex> = HashMap::from([
+        ("ID", Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap()),
+        ("!s", Regex::new("^\".*\"$").unwrap()),
+        ("!i", Regex::new("^[0-9]+$").unwrap()),
+        ("!f", Regex::new("^[0-9]+\\.[0-9]+$").unwrap())
+    ]);
+
+    for lexeme in lexeme_set {
+        if let Some((data_type, _)) = valid_regex_type_match.iter().find(|(_, re)| re.is_match(&lexeme)) {
+            lexeme_type.push(*data_type);
+        }
+
+        else {
+            lexeme_type.push("");
+        }
+    }
+
+    println!("types:\n\n{:?}\n\n", lexeme_type);
 
 }
 

@@ -1,4 +1,4 @@
-use std::{collections::HashMap, string, vec};
+use std::{array, collections::HashMap, string, vec};
 use indexmap::IndexSet;
 use regex::Regex;
 
@@ -123,7 +123,6 @@ fn main() {
                 lexeme_set.insert(lexeme.clone());
                 lexeme.clear();
             }
-
         }
         
         else {
@@ -137,6 +136,11 @@ fn main() {
     }
     
     print!("lexemes:\n\n{:?}\n\n", lexeme_set);
-    
+
+    let regex_identifier: Regex = Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap();
+    let regex_stringtype: Regex = Regex::new("^\".*\"$").unwrap();
+    let regex_inttype: Regex = Regex::new("^[0-9]+$").unwrap();
+    let regex_floattype: Regex = Regex::new("^[0-9]+.[0-9]+$").unwrap();
+
 }
 

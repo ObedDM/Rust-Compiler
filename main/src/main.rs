@@ -42,6 +42,22 @@ fn create_char_set(string: &str) -> IndexSet<char> {
     return string_set;
 }
 
+fn is_end_of_lex(c: char, token_map: HashMap<&str, Vec<char>>) -> bool {
+    for (token_type, lex_list) in token_map {
+
+        //Checks for possible "end-lexeme" indicating characters; add to the condition as needed
+        if (token_type == "DEL") || (token_type == "AS") || (token_type == "SEP") {
+            
+            //Checks if current character represents the end of a lexeme
+            if lex_list.contains(&c) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 fn main() {
     /*let window: AppWindow = AppWindow::new()?;
     let window_weak = window.as_weak();
@@ -63,13 +79,55 @@ fn main() {
     tokens.insert("DEL", vec![";"]);
     tokens.insert("OPA", vec!["+", "-", "*", "/"]);*/
 
-    let test_string: &str = "!s s.test;";
+
+
+
+    /*let test_string: &str = "!s s.test;";
 
     let string_set = create_char_set(test_string);
 
     for c in string_set.iter() {
         print!("{}", c);
+    }*/
+
+    //Token name
+    let mut tokens: HashMap<&str, Vec<char>> = HashMap::new();
+    tokens.insert("AS", vec!['=']);
+    tokens.insert("DEL", vec![';', ',', ]);
+    tokens.insert("SEP", vec![' ']);
+
+    //Sample of a line to be processed
+    let test_string: &str = "!s s.test;";
+ 
+    
+    let mut string_set: IndexSet<char> = IndexSet::new();
+
+    //Iterates over the string (line sample)
+    for c in test_string.chars() {
+        
+        // lexer separator
+
     }
+
+
+    for key in tokens.keys() {
+
+        if let Some(vector) = tokens.get(key) {
+            
+            for token in vector {
+                println!("{:?}", token);
+
+                if ';' == token.clone() {
+                    println!("token {} is equal? {}", token, true);
+                }
+            }
+        }
+    }
+
+    
+
+
+
     
 }
 

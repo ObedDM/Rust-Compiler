@@ -203,3 +203,15 @@ fn categorize_line(line:&str) -> i8 {
         }
     }
 }
+
+fn uncategorize(category: i8) -> &'static str {
+    
+    match category {
+        0 => "dec",
+        1 => "aop",
+        2 => "asg",
+        3 => "dec-aop",
+        4 => "dec-asg",
+        _=> "undefined"
+    }
+}

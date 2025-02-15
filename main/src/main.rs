@@ -42,11 +42,11 @@ fn create_char_set(string: &str) -> IndexSet<char> {
     return string_set;
 }
 
-fn is_end_of_lex(c: char, token_map: HashMap<&str, Vec<char>>) -> bool {
+fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> bool {
     for (token_type, lex_list) in token_map {
 
         //Checks for possible "end-lexeme" indicating characters; add to the condition as needed
-        if (token_type == "DEL") || (token_type == "AS") || (token_type == "SEP") {
+        if (*token_type == "DEL") || (*token_type == "AS") || (*token_type == "SEP") {
             
             //Checks if current character represents the end of a lexeme
             if lex_list.contains(&c) {
@@ -105,24 +105,12 @@ fn main() {
     //Iterates over the string (line sample)
     for c in test_string.chars() {
         
-        // lexer separator
+        let lexeme_end: bool = is_end_of_lex(c, &tokens);
+
+        println!("character: {} represents end of lexemne: {}", c, lexeme_end);
 
     }
 
-
-    for key in tokens.keys() {
-
-        if let Some(vector) = tokens.get(key) {
-            
-            for token in vector {
-                println!("{:?}", token);
-
-                if ';' == token.clone() {
-                    println!("token {} is equal? {}", token, true);
-                }
-            }
-        }
-    }
 
     
 

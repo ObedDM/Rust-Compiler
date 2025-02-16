@@ -72,16 +72,37 @@ fn main() {
 
     //Sample of a line to be processed
     let test_string: &str = "!s s.test, x.ss, o.a$";
- 
-    let mut lexeme_set: IndexSet<String> = IndexSet::new();
 
+    println!("line sample: \"{}\"", test_string);
+
+    let lexemes: IndexSet<String> = generate_lexeme_table(test_string, &tokens);
+    print!("lexemes:\n\n{:?}\n\n", lexemes);
+
+    let lexeme_types: Vec<String> = generate_lexeme_type(lexemes);
+
+    print!("types:\n\n{:?}\n\n", lexeme_types);
+
+    match linecat::categorize_line(test_string) {
+        Some(cat) =>  {
+            let cat_res: &str = &linecat::uncategorize(cat);
+            println!("{}", cat_res);
+        }
+
+        None => {
+            println!("\"{}\" cannot be categorized", test_string);
+        }
+    };
+
+}
+
+fn generate_lexeme_table(line: &str, token_map: &HashMap<&str, Vec<char>>) -> IndexSet<String> {
+
+    let mut lexeme_set: IndexSet<String> = IndexSet::new();
     let mut lexeme: String = String::new();
 
-    //println!("lexemes:\n");
-
     //Iterates over the string (line sample)
-    for c in test_string.chars() {
-        let (end_of_lexeme, token_type) = is_end_of_lex(c, &tokens);
+    for c in line.chars() {
+        let (end_of_lexeme, token_type) = is_end_of_lex(c, token_map);
 
         if end_of_lexeme {
 
@@ -109,24 +130,8 @@ fn main() {
         lexeme_set.insert(lexeme);
     }
     
-    print!("lexemes:\n\n{:?}\n\n", lexeme_set);
-
-
-    print!("types:\n\n{:?}\n\n", lexeme_type);
-
-    match linecat::categorize_line(test_string) {
-        Some(cat) =>  {
-            let cat_res: &str = &linecat::uncategorize(cat);
-            println!("{}", cat_res);
-        }
-
-        None => {
-            println!("\"{}\" cannot be categorized", test_string);
-        }
-    };
-
+    return lexeme_set;
 }
-
 
 fn generate_lexeme_type(lexeme_set: IndexSet<String>) -> Vec<String> {
     

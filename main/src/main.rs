@@ -71,7 +71,7 @@ fn main() {
     tokens.insert("AOP", vec!['+', '-', '*', '/', '%']); //Arithmetic operators
 
     //Sample of a line to be processed
-    let test_string: &str = ";";
+    let test_string: &str = "gfgf;";
  
     let mut lexeme_type: Vec<&str> = vec![];
     let mut lexeme_set: IndexSet<String> = IndexSet::new();
@@ -131,5 +131,16 @@ fn main() {
     }
 
     print!("types:\n\n{:?}\n\n", lexeme_type);
+
+    match linecat::categorize_line(test_string) {
+        Some(cat) =>  {
+            let cat_res: &str = &linecat::uncategorize(cat);
+            println!("{}", cat_res);
+        }
+
+        None => {
+            println!("\"{}\" cannot be categorized", test_string);
+        }
+    };
 
 }

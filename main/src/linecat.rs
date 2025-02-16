@@ -10,7 +10,7 @@ pub fn categorize_line(line:&str) -> Option<i8> {
         ("dec-asg", 4), //line cat = declaring & asign into var
         ]);
 
-    if line.starts_with('!') { // is it dec?
+    if line.contains('!') { // is it dec?
         if  line.contains('=') { // is it dec only?
             if line.contains(['+', '-', '*', '/', '%']) { // is it dec + aop
                 return Some(category_map["dec-aop"]);
@@ -26,20 +26,18 @@ pub fn categorize_line(line:&str) -> Option<i8> {
         }   
     }
 
+    else if line.contains(['+', '-', '*', '/', '%']) {
+        return Some(category_map["aop"]);
+        
+        }
+
+    else if line.contains('=') {
+        return Some(category_map["asg"]);
+
+    }
+
     else {
-        if line.contains(['+', '-', '*', '/', '%']) {
-            return Some(category_map["aop"]);
-            
-            }
-
-        else if !(line.contains(['+', '-', '*', '/', '%'])) {   
-            return Some(category_map["asg"]);
-
-        }
-
-        else {
-            return None;
-        }
+        return None;
     }
 }
 

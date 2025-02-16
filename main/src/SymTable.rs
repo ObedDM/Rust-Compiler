@@ -73,7 +73,7 @@ pub fn generate_lexeme_type(lexeme_set: IndexSet<String>, valid_regex_map: HashM
     return lexeme_type;
 }
 
-fn create_substring_regex(regex: &Regex) -> Regex {
+pub fn create_substring_regex(regex: &Regex) -> Regex {
     let expression = regex.as_str();
     return Regex::new(&format!(".*{}.*", &expression[1..expression.len()-1])).unwrap();
 }

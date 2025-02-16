@@ -50,7 +50,7 @@ fn main() {
     let lexemes: IndexSet<String> = SymTable::generate_lexeme_table(test_string, &tokens);
     print!("lexemes:\n\n{:?}\n\n", lexemes);
 
-    let mut lexeme_types: Vec<String> = SymTable::generate_lexeme_type(lexemes, valid_regex_type_match);
+    let mut lexeme_types: Vec<String> = SymTable::generate_lexeme_type(lexemes, &valid_regex_type_match);
 
     print!("types:\n\n{:?}\n\n", lexeme_types);
 

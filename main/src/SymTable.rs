@@ -56,7 +56,7 @@ pub fn generate_lexeme_table(line: &str, token_map: &HashMap<&str, Vec<char>>) -
     return lexeme_set;
 }
 
-pub fn generate_lexeme_type(lexeme_set: IndexSet<String>, valid_regex_map: HashMap<&str, Regex>) -> Vec<String> {
+pub fn generate_lexeme_type(lexeme_set: IndexSet<String>, valid_regex_map: &HashMap<&str, Regex>) -> Vec<String> {
     
     let mut lexeme_type: Vec<String> = vec![];
 
@@ -71,9 +71,4 @@ pub fn generate_lexeme_type(lexeme_set: IndexSet<String>, valid_regex_map: HashM
     }
 
     return lexeme_type;
-}
-
-pub fn create_substring_regex(regex: &Regex) -> Regex {
-    let expression = regex.as_str();
-    return Regex::new(&format!(".*{}.*", &expression[1..expression.len()-1])).unwrap();
 }

@@ -45,14 +45,9 @@ fn main() {
     //Sample of a line to be processed
     let test_string: &str = "!s s.test, x.ss, o.a$";
 
-    println!("line sample: \"{}\"", test_string);
-
     let lexemes: IndexSet<String> = SymTable::generate_lexeme_table(test_string, &tokens);
-    print!("lexemes:\n\n{:?}\n\n", lexemes);
 
-    let mut lexeme_types: Vec<String> = SymTable::generate_lexeme_type(lexemes, &valid_regex_type_match);
-
-    print!("types:\n\n{:?}\n\n", lexeme_types);
+    let mut lexeme_types: Vec<String> = SymTable::generate_lexeme_type(&lexemes, &valid_regex_type_match);
 
     let mut cat: i8 = -1; //Initializes cat
 
@@ -65,5 +60,30 @@ fn main() {
             println!("\"{}\" cannot be categorized", test_string);
         }
     };
+
+    let type_regex: Regex = Regex::new("![A-Za-z]").unwrap();
+
+    if (cat == 0) || (cat == 3) || (cat == 4) { // Either dec, dec-aop or dec-asg. Any type of declaration;
+        
+        if let Some(substring) = type_regex.find(test_string) { // Finds identifier in the string
+            for data_type in lexeme_types.iter_mut() {
+                if *data_type == "ID" {
+                    *data_type = substring.as_str().to_string();
+                }
+            }
+        }
+
+        else {
+            for data_type in lexeme_types.iter_mut() {
+                if *data_type == "ID" {
+                    *data_type = "".to_string();
+                }
+            }
+        }
+    }
+
+    println!("line sample: \"{}\"\n Table of Symbols:\n", test_string);
+
+    println!("{:?}\n{:?}", lexemes, lexeme_types); 
 
 }

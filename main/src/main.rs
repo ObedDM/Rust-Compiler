@@ -3,7 +3,7 @@ use indexmap::IndexSet;
 use regex::Regex;
 
 mod SymTable;
-mod linecat;
+mod LineCat;
 
 slint::include_modules!();
 
@@ -47,9 +47,9 @@ fn main() {
 
     print!("types:\n\n{:?}\n\n", lexeme_types);
 
-    match linecat::categorize_line(test_string) {
+    match LineCat::categorize_line(test_string) {
         Some(cat) =>  {
-            let cat_res: &str = &linecat::uncategorize(cat);
+            let cat_res: &str = &LineCat::uncategorize(cat);
             println!("{}", cat_res);
         }
 

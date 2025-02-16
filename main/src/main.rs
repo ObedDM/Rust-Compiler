@@ -5,16 +5,6 @@ mod linecat;
 
 slint::include_modules!();
 
-fn create_char_set(string: &str) -> IndexSet<char> {
-    let mut string_set: IndexSet<char> = IndexSet::new();
-
-    for c in string.chars() {
-        string_set.insert(c);
-    }
-
-    return string_set;
-}
-
 fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> (bool, String) {
     for (token_type, lex_list) in token_map {
 

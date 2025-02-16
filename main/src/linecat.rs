@@ -1,4 +1,6 @@
-fn categorize_line(line:&str) -> i8 {
+use std::{collections::HashMap};
+
+pub fn categorize_line(line:&str) -> Option<i8> {
 
     let category_map: HashMap<&str, i8> = HashMap::from([
         ("dec", 0), //line cat = declaring var
@@ -11,33 +13,37 @@ fn categorize_line(line:&str) -> i8 {
     if line.starts_with('!') { // is it dec?
         if  line.contains('=') { // is it dec only?
             if line.contains(['+', '-', '*', '/', '%']) { // is it dec + aop
-                return category_map["dec-aop"];
+                return Some(category_map["dec-aop"]);
             }
 
             else {
-                return category_map["dec-asg"];
+                return Some(category_map["dec-asg"]);
             }
         }
         
         else {
-            return category_map["dec"];
+            return Some(category_map["dec"]);
         }   
     }
 
     else {
         if line.contains(['+', '-', '*', '/', '%']) {
-            return category_map["aop"];
+            return Some(category_map["aop"]);
             
             }
 
-        else {   
-            return category_map["asg"];
+        else if !(line.contains(['+', '-', '*', '/', '%'])) {   
+            return Some(category_map["asg"]);
 
+        }
+
+        else {
+            return None;
         }
     }
 }
 
-fn uncategorize(category: i8) -> &'static str {
+pub fn uncategorize(category: i8) -> &'static str {
     
     match category {
         0 => "dec",

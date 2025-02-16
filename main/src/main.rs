@@ -1,36 +1,9 @@
-use std::{array, collections::HashMap, string, vec};
+use std::{collections::HashMap, vec};
 use indexmap::IndexSet;
 use regex::Regex;
+mod linecat;
 
 slint::include_modules!();
-
-/*fn is_valid_identifier(identifier: &str) -> bool {
-    let regex: &str = "^[A-Za-z]\\.[a-z$!?_]*$";
-    let re = Regex::new(regex).unwrap();
-
-    if re.is_match(identifier)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-fn is_valid_type(type_input: &str) -> bool {
-    let regex: &str = "![A-Za-z]";
-    let re = Regex::new(regex).unwrap();
-
-    if re.is_match(type_input)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}*/
 
 fn create_char_set(string: &str) -> IndexSet<char> {
     let mut string_set: IndexSet<char> = IndexSet::new();
@@ -98,7 +71,7 @@ fn main() {
     tokens.insert("AOP", vec!['+', '-', '*', '/', '%']); //Arithmetic operators
 
     //Sample of a line to be processed
-    let test_string: &str = "!i = i.num + 444;";
+    let test_string: &str = ";";
  
     let mut lexeme_type: Vec<&str> = vec![];
     let mut lexeme_set: IndexSet<String> = IndexSet::new();
@@ -157,6 +130,6 @@ fn main() {
         }
     }
 
-    println!("types:\n\n{:?}\n\n", lexeme_type);
+    print!("types:\n\n{:?}\n\n", lexeme_type);
 
 }

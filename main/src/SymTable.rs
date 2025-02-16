@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use indexmap::IndexSet;
+use regex::Regex;
 
 pub fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> (bool, String) {
     for (token_type, lex_list) in token_map {

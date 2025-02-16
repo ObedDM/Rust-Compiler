@@ -28,6 +28,13 @@ fn main() {
     tokens.insert("DEL", vec![";"]);
     tokens.insert("OPA", vec!["+", "-", "*", "/"]);*/
 
+    let valid_regex_type_match: HashMap<&str, Regex> = HashMap::from([
+        ("ID", Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap()),
+        ("!s", Regex::new("^\".*\"$").unwrap()),
+        ("!i", Regex::new("^[0-9]+$").unwrap()),
+        ("!f", Regex::new("^[0-9]+\\.[0-9]+$").unwrap())
+    ]);
+
     //Token name
     let mut tokens: HashMap<&str, Vec<char>> = HashMap::new();
     tokens.insert("AS", vec!['=']);
@@ -43,14 +50,15 @@ fn main() {
     let lexemes: IndexSet<String> = SymTable::generate_lexeme_table(test_string, &tokens);
     print!("lexemes:\n\n{:?}\n\n", lexemes);
 
-    let lexeme_types: Vec<String> = SymTable::generate_lexeme_type(lexemes);
+    let mut lexeme_types: Vec<String> = SymTable::generate_lexeme_type(lexemes, valid_regex_type_match);
 
     print!("types:\n\n{:?}\n\n", lexeme_types);
 
+    let mut cat: i8 = -1; //Initializes cat
+
     match LineCat::categorize_line(test_string) {
-        Some(cat) =>  {
-            let cat_res: &str = &LineCat::uncategorize(cat);
-            println!("{}", cat_res);
+        Some(value) =>  {
+            cat = value;
         }
 
         None => {

@@ -56,19 +56,12 @@ pub fn generate_lexeme_table(line: &str, token_map: &HashMap<&str, Vec<char>>) -
     return lexeme_set;
 }
 
-pub fn generate_lexeme_type(lexeme_set: IndexSet<String>) -> Vec<String> {
+pub fn generate_lexeme_type(lexeme_set: IndexSet<String>, valid_regex_map: HashMap<&str, Regex>) -> Vec<String> {
     
     let mut lexeme_type: Vec<String> = vec![];
 
-    let valid_regex_type_match: HashMap<&str, Regex> = HashMap::from([
-        ("ID", Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap()),
-        ("!s", Regex::new("^\".*\"$").unwrap()),
-        ("!i", Regex::new("^[0-9]+$").unwrap()),
-        ("!f", Regex::new("^[0-9]+\\.[0-9]+$").unwrap())
-    ]);
-
     for lexeme in lexeme_set {
-        if let Some((data_type, _)) = valid_regex_type_match.iter().find(|(_, re)| re.is_match(&lexeme)) {
+        if let Some((data_type, _)) = valid_regex_map.iter().find(|(_, re)| re.is_match(&lexeme)) {
             lexeme_type.push(data_type.to_string());
         }
 
@@ -78,4 +71,9 @@ pub fn generate_lexeme_type(lexeme_set: IndexSet<String>) -> Vec<String> {
     }
 
     return lexeme_type;
+}
+
+fn create_substring_regex(regex: &Regex) -> Regex {
+    let expression = regex.as_str();
+    return Regex::new(&format!(".*{}.*", &expression[1..expression.len()-1])).unwrap();
 }

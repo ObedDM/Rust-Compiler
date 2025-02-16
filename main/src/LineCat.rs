@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 pub fn categorize_line(line:&str) -> Option<i8> {
 

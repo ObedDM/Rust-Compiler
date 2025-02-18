@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use indexmap::IndexSet;
 use regex::Regex;
+use std::fs::File;
+use std::io::prelude::*;
 
 mod SymTable;
 mod LineCat;
@@ -8,6 +10,13 @@ mod LineCat;
 slint::include_modules!();
 
 fn main() {
+
+    let mut file: File = File::open("code.txt").expect("File not found or cant be opened");
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).expect("File cannot be read");
+    
+
     /*let window: AppWindow = AppWindow::new()?;
     let window_weak = window.as_weak();
 
@@ -44,7 +53,7 @@ fn main() {
     tokens.insert("AOP", vec!['+', '-', '*', '/', '%']); //Arithmetic operators
 
 
-    let multiple_lines_test: &str = "!s s.test;\n\n\n!f f.line2 = 5;\ni.line3 = 1+2;";   
+    let multiple_lines_test: &str = &contents;   
 
     let mut lexemes: IndexSet<String> = IndexSet::new();
     let mut lexeme_types: Vec<String> = Vec::new();

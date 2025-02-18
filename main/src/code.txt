@@ -1,0 +1,5 @@
+!s s.test;
+
+
+!f f.line2 = 5;
+i.line3 = 1+2;

@@ -1,0 +1,15 @@
+Table of Symbols:
+
+Lexeme         	Type
+---------------	----------
+!s             	
+s.test         	!s
+;              	
+!f             	
+f.line2        	!f
+=              	
+5              	!i
+i.line3        	
+1              	!i
++              	
+2              	!i

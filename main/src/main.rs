@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use indexmap::IndexSet;
 use regex::Regex;
-use std::fs::File;
+use std::fs::{File, write};
 use std::io::prelude::*;
 
 mod SymTable;
@@ -119,6 +119,17 @@ fn main() {
 }
     
     //println!("\n\ncode sample:\n\"{}\"\n\nTable of Symbols:\n", multiple_lines_test);
-    println!("\nTable of Symbols:\n\nLexeme: {:?}\nType: {:?}", lexemes, lexeme_types); 
+    println!("\nTable of Symbols:\n\nLexeme: {:?}\nType: {:?}", lexemes, lexeme_types);
+
+    let mut output_str = String::new();
+    output_str.push_str("Table of Symbols:\n\n");
+    output_str.push_str(&format!("{:<15}\t{}\n", "Lexeme", "Type"));
+    output_str.push_str(&format!("{:-<15}\t{:-<10}\n", "", ""));
+    
+    for (lex, dtype) in lexemes.iter().zip(lexeme_types.iter()) {
+        output_str.push_str(&format!("{:<15}\t{}\n", lex, dtype));
+    }
+    
+    write("output.txt", output_str).expect("Unable to write file");
 
 }

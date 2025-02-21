@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use indexmap::IndexSet;
 use regex::Regex;
+use std::fs::write;
 
 pub fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> (bool, String) {
     for (token_type, lex_list) in token_map {
@@ -102,4 +103,18 @@ pub fn handle_duplicate_lexemes(line_lexemes: &IndexSet<String>, line_lexeme_typ
     }
 
     lexeme_types.extend(filtered_line_lexeme_types);
+}
+
+pub fn write_out_sym_table(lexemes: IndexSet<String>, lexeme_types: Vec<String>, path: &str) {
+    
+    let mut output_str = String::new();
+    output_str.push_str("Table of Symbols:\n\n");
+    output_str.push_str(&format!("{:<15}\t{}\n", "Lexeme", "Type"));
+    output_str.push_str(&format!("{:-<15}\t{:-<10}\n", "", ""));
+    
+    for (lex, dtype) in lexemes.iter().zip(lexeme_types.iter()) {
+        output_str.push_str(&format!("{:<15}\t{}\n", lex, dtype));
+    }
+    
+    write(path, output_str).expect("Unable to write file");
 }

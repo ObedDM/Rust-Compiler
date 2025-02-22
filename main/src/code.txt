@@ -2,4 +2,6 @@
 !i i.entero = 1;
 
 !f f.line2 = 5;
+f.line2 = 10;
+s.test = "hola";
 i.line3 = 1+2;

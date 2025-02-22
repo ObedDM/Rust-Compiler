@@ -72,7 +72,7 @@ fn main() {
 
         line_counter += 1;
 
-        println!("{}   {}", line_counter, test_string);
+        //println!("{}   {}", line_counter, test_string);
 
         let line_lexemes = SymTable::generate_lexeme_table(test_string, &tokens);
         let mut line_lexeme_types = SymTable::generate_lexeme_type(&line_lexemes, &valid_regex_type_match);
@@ -106,21 +106,49 @@ fn main() {
         else {
             for data_type in line_lexeme_types.iter_mut() {
                 if *data_type == "ID" {
-                    *data_type = "".to_string();
+                    *data_type = "undefined".to_string();
                 }
             }
         }
 
         //println!("\n\ncode sample:\n\"{}\"\n\nTable of Symbols:\n", test_string);
         //println!("{:?}\n{:?}", line_lexemes, line_lexeme_types);         
-
+ 
         // Handles duplicated type asignment between lexeme and lexeme_types
         SymTable::handle_duplicate_lexemes(&line_lexemes, &line_lexeme_types, &mut lexemes, &mut lexeme_types);
-}
-    
-    //println!("\n\ncode sample:\n\"{}\"\n\nTable of Symbols:\n", multiple_lines_test);
-    println!("\nTable of Symbols:\n\nLexeme: {:?}\nType: {:?}", lexemes, lexeme_types);
 
-    SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");
+        //println!("\nTable of Symbols:\n\nLexeme: {:?}\nType: {:?}", lexemes, lexeme_types);
+
+        //let mut inline_lexeme_dtype_vec: Vec<&str> = vec![];
+        let mut show_lex_vec: Vec<&str> = vec![];
+
+        if true { //category asg or dec-asg
+
+            for inline_lexeme in line_lexemes {
+                
+                for (index, lexeme) in lexemes.iter().enumerate() {
+                    if *lexeme == inline_lexeme {
+                        let dtype = &lexeme_types[index];
+                        
+                        if !(dtype == "" || dtype == "undefined") {
+                            show_lex_vec.push(dtype.as_str())
+                        }
+
+                        else {
+                            show_lex_vec.push("");
+                        }
+
+                        break;
+                    }
+                }      
+            }
+        println!("line: {}, catergory: ({})", line_counter, LineCat::uncategorize(cat));
+        println!("{}", test_string);
+        println!("{:?}\n", show_lex_vec);
+
+        }
+}
+
+    //SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");
 
 }

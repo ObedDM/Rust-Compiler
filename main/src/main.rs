@@ -129,38 +129,9 @@ fn main() {
         // Handles duplicated type asignment between lexeme and lexeme_types
         SymTable::handle_duplicate_lexemes(&line_lexemes, &line_lexeme_types, &mut lexemes, &mut lexeme_types);
 
-        let mut line_type_layout_vec: Vec<&str> = vec![];
+        let line_dtype: String = ErrTable::assign_dtype(&line_lexemes, &lexemes, &lexeme_types, &tokens); 
 
-        // Categorizes lexemes in current line into their corresponding data types
-        for inline_lexeme in line_lexemes {
-                
-            for (index, lexeme) in lexemes.iter().enumerate() {
-                if *lexeme == inline_lexeme {
-                    let dtype = &lexeme_types[index];
-                    
-                    if !(dtype == "") {
-                        line_type_layout_vec.push(dtype.as_str())
-                    }
-
-                    else {
-                        for (name, token_vec) in tokens.iter(){
-                            for token in token_vec {
-                                if (inline_lexeme == token.to_string()) && (*name == "AOP" || *name == "AS") {
-                                    line_type_layout_vec.push(&lexeme);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    break;
-                }
-            }      
-        }
-
-        let line_type_layout_string: String = line_type_layout_vec.join("");        
-
-        match ErrTable::check_semantics(&semantic_rules, line_type_layout_string.as_str()) {
+        match ErrTable::check_semantics(&semantic_rules, &line_dtype.as_str()) {
             Some(value) => {
                 println!("{} is a match!", value);
             }
@@ -172,7 +143,7 @@ fn main() {
 
         //println!("line: {}, catergory: ({})", line_counter, LineCat::uncategorize(cat));
         //println!("{}", test_string);
-        println!("{}\n", line_type_layout_string);
+        println!("{}\n", line_dtype);
     }
 
     //SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");

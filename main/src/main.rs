@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::hash::Hash;
 use indexmap::IndexSet;
 use regex::Regex;
 use std::fs::File;
@@ -6,6 +7,7 @@ use std::io::prelude::*;
 
 mod SymTable;
 mod LineCat;
+mod ErrTable;
 
 slint::include_modules!();
 
@@ -41,8 +43,8 @@ fn main() {
     let valid_regex_type_match: HashMap<&str, Regex> = HashMap::from([
         ("ID", Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap()),
         ("!s", Regex::new("^\".*\"$").unwrap()),
-        ("!i", Regex::new("^[0-9]+$").unwrap()),
-        ("!f", Regex::new("^[0-9]+\\.[0-9]+$").unwrap())
+        ("!i", Regex::new("^[+-]?[0-9]+$").unwrap()),
+        ("!f", Regex::new("^[+-]?[0-9]+\\.[0-9]+$").unwrap())
     ]);
 
     //Define tokens
@@ -51,6 +53,12 @@ fn main() {
     tokens.insert("DEL", vec![';', ',', ]);
     tokens.insert("SPACE", vec![' ']);
     tokens.insert("AOP", vec!['+', '-', '*', '/', '%']); //Arithmetic operators
+
+    let semantic_rules: [Regex; 3] = [
+        Regex::new("^!s=(!s|!s\\*(!i)+|!s\\+(!s)+)$").unwrap(),
+        Regex::new("^!i=(!i([+-\\*]!i)*)$").unwrap(),
+        Regex::new("^!f=((!f|!i)([+-\\*/%](!f|!i))*)$").unwrap(),
+        ];
 
 
     let multiple_lines_test: &str = &contents;   
@@ -111,43 +119,44 @@ fn main() {
             }
         }
 
-        //println!("\n\ncode sample:\n\"{}\"\n\nTable of Symbols:\n", test_string);
-        //println!("{:?}\n{:?}", line_lexemes, line_lexeme_types);         
- 
         // Handles duplicated type asignment between lexeme and lexeme_types
         SymTable::handle_duplicate_lexemes(&line_lexemes, &line_lexeme_types, &mut lexemes, &mut lexeme_types);
 
-        //println!("\nTable of Symbols:\n\nLexeme: {:?}\nType: {:?}", lexemes, lexeme_types);
+        let mut line_type_layout_vec: Vec<&str> = vec![];
 
-        //let mut inline_lexeme_dtype_vec: Vec<&str> = vec![];
-        let mut show_lex_vec: Vec<&str> = vec![];
-
-        if true { //category asg or dec-asg
-
-            for inline_lexeme in line_lexemes {
+        // Categorizes lexemes in current line into their corresponding data types
+        for inline_lexeme in line_lexemes {
                 
-                for (index, lexeme) in lexemes.iter().enumerate() {
-                    if *lexeme == inline_lexeme {
-                        let dtype = &lexeme_types[index];
-                        
-                        if !(dtype == "" || dtype == "undefined") {
-                            show_lex_vec.push(dtype.as_str())
-                        }
-
-                        else {
-                            show_lex_vec.push("");
-                        }
-
-                        break;
+            for (index, lexeme) in lexemes.iter().enumerate() {
+                if *lexeme == inline_lexeme {
+                    let dtype = &lexeme_types[index];
+                    
+                    if !(dtype == "") {
+                        line_type_layout_vec.push(dtype.as_str())
                     }
-                }      
-            }
+
+                    else {
+                        for (name, token_vec) in tokens.iter(){
+                            for token in token_vec {
+                                if (inline_lexeme == token.to_string()) && (*name == "AOP" || *name == "AS") {
+                                    line_type_layout_vec.push(&lexeme);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }      
+        }
+
+        let line_type_layout_str: String = line_type_layout_vec.join("");        
+
         println!("line: {}, catergory: ({})", line_counter, LineCat::uncategorize(cat));
         println!("{}", test_string);
-        println!("{:?}\n", show_lex_vec);
-
-        }
-}
+        println!("{}\n", line_type_layout_str);
+    }
 
     //SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");
 

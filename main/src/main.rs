@@ -55,9 +55,9 @@ fn main() {
     tokens.insert("AOP", vec!['+', '-', '*', '/', '%']); //Arithmetic operators
 
     let semantic_rules: [Regex; 3] = [
-        Regex::new("^!s=(!s|!s\\*(!i)+|!s\\+(!s)+)$").unwrap(),
-        Regex::new("^!i=(!i([+-\\*]!i)*)$").unwrap(),
-        Regex::new("^!f=((!f|!i)([+-\\*/%](!f|!i))*)$").unwrap(),
+        Regex::new("^!s=!s|!s\\*(!i)+|!s\\+(!s)+$").unwrap(),
+        Regex::new("^!i=!i([+*-]!i)*$").unwrap(),
+        Regex::new("^!f=(!f|!i)([+*/%-](!f|!i))*$").unwrap(),
         ];
 
 
@@ -79,6 +79,13 @@ fn main() {
     for test_string in multiple_lines_test.lines() {
 
         line_counter += 1;
+
+        let empty_line_checker = test_string.replace(" ", "");
+
+        if empty_line_checker.is_empty() {
+            println!("line {} is empty\n", line_counter);
+            continue;
+        }
 
         //println!("{}   {}", line_counter, test_string);
 
@@ -151,11 +158,21 @@ fn main() {
             }      
         }
 
-        let line_type_layout_str: String = line_type_layout_vec.join("");        
+        let line_type_layout_string: String = line_type_layout_vec.join("");        
 
-        println!("line: {}, catergory: ({})", line_counter, LineCat::uncategorize(cat));
-        println!("{}", test_string);
-        println!("{}\n", line_type_layout_str);
+        match ErrTable::check_semantics(&semantic_rules, line_type_layout_string.as_str()) {
+            Some(value) => {
+                println!("{} is a match!", value);
+            }
+
+            None => {
+                println!("does not match regex!");
+            }
+        }
+
+        //println!("line: {}, catergory: ({})", line_counter, LineCat::uncategorize(cat));
+        //println!("{}", test_string);
+        println!("{}\n", line_type_layout_string);
     }
 
     //SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");

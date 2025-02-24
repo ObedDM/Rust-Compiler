@@ -1,3 +1,31 @@
-!i i.entero;
+!i i.numerito, i.otronumerito, i.numerote;
+!f f.realnumerito, f.otronumeritoreal, f.numerotereal;
+!s s.cadenita, s.otracadenita, s.cadenota;
 
-!i i.entero2 = 5.7 % i.entero;
+s.cadenita="Hola soy cadenita";
+f.realnumerito=10.2;
+i.otronumerito=2;
+i.numerito=1;
+
+f.numerotereal= f.realnumerito * i.otronumerito;
+s.cadenita = "hola" + "adios";
+i.numerito = i.otronumerito - i.numerote;
+
+
+
+s.otracadenita = "hola" + 2;
+i.numerito= i.otronumerito * f.realnumerito;
+i.numerito= i.otronumerito / i.numerote;
+
+
+s.cadenita = 2;
+i.numerito= "Errorcito" ;
+f.realnumerito = "Error";
+
+
+i.numerito = i.noexiste + i.numerote;
+f.realnumerito = f.numerotereal * f.tampocoexiste;
+
+
+s.nohay = "texto";
+f.nodefinido = 3.14159;

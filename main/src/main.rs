@@ -89,6 +89,8 @@ fn main() {
 
     let mut line_counter: u16 = 0;
 
+    let mut ErrSem_counter: u16 = 0;
+
     for test_string in multiple_lines_test.lines() {
 
         line_counter += 1;
@@ -96,7 +98,7 @@ fn main() {
         let empty_line_checker = test_string.replace(" ", "");
 
         if empty_line_checker.is_empty() {
-            println!("line {} is empty\n", line_counter);
+            //println!("Renglon: {} esta vacio", line_counter);
             continue;
         }
 
@@ -143,47 +145,67 @@ fn main() {
         // Handles duplicated type asignment between lexeme and lexeme_types
         SymTable::handle_duplicate_lexemes(&line_lexemes, &line_lexeme_types, &mut lexemes, &mut lexeme_types);
 
-        if cat == 3 || cat == 4 || cat == 1 || cat == 2 { // Either aop, asg, dec-aop, dec-asg (not dec since dec represents when a var is declared, thus not having a value assigned)
+        // Check if theres any undefined variable  
+        let mut undefined_identifier_flag: bool = false;
+        let mut undefined_lexemes: Vec<String> = vec![];        
 
-            let mut invalid_lexeme_indexes: Vec<u8> = vec![];
-            let mut incompatible_dtype: Option<String> = None;
+        for inline_lexeme in &line_lexemes {
+            for (index_global_lexeme, global_lexeme) in lexemes.iter().enumerate() {
+                
+                if (inline_lexeme == global_lexeme) && (lexeme_types[index_global_lexeme] == "undefined") {
+                    ErrSem_counter += 1;
+                    undefined_lexemes.push(inline_lexeme.to_string());
+                    undefined_identifier_flag = true;
+                }
+            }
+        }
+
+        if undefined_identifier_flag { // If theres an undefined lexeme, passes onto next line and creates register into Error Table (above)
+            println!("Token: ErrSem{}, Renglon: {}, Lexemas: {:?}, Descripcion: Variable indefinida", ErrSem_counter, line_counter, undefined_lexemes);
+            continue;
+        }
+
+
+        let mut invalid_lexeme_indexes: Vec<u8> = vec![];
+        let mut incompatible_dtype: Option<String> = None;
+
+        let mut invalid_lexemes: Vec<String> = vec![];
+
+        if cat == 3 || cat == 4 || cat == 1 || cat == 2 { // Either aop, asg, dec-aop, dec-asg (not dec since dec represents when a var is declared, thus not having a value assigned)
 
             // assigns datatypes to the corresponding lexeme in the current line
             let line_dtype: Vec<String>;
             let lexeme_dtype_mapper: HashMap<usize, usize>;
             
             (line_dtype, lexeme_dtype_mapper) = ErrTable::assign_dtype(&line_lexemes_vec, &lexemes, &lexeme_types, &tokens); 
-
-            println!("line_dtype {:?}", line_dtype);
-
-
-
+            
             (invalid_lexeme_indexes, incompatible_dtype) = ErrTable::check_semantics(&mut invalid_lexeme_indexes, &mut incompatible_dtype, &line_dtype, &dtype_rules);
-
-
-            println!();
-            println!("{:?}", line_dtype);
             
-            println!("{:?}", invalid_lexeme_indexes);
-            println!("{:?}", incompatible_dtype);
-            println!();
+            //println!("vec: {:?}", line_lexemes_vec);
+            //println!("dtype: {:?}", line_dtype);
 
-            println!("{:?}", line_lexemes);
-            
+            /* Only checks if assign_dtype is mapping correctly indexes   
             for (dtypes_index, lexemes_index) in &lexeme_dtype_mapper {
                 println!("[{}]{:?} : [{}]{:?}", lexemes_index, line_lexemes_vec[*lexemes_index], dtypes_index, line_dtype[*dtypes_index]);
-            }
-
-            println!("{:?}", invalid_lexeme_indexes);
+            }*/
 
             for dtype_invalid_indexes in invalid_lexeme_indexes.iter().map(|index| *index as usize) {
                 let lexeme_real_index = lexeme_dtype_mapper[&dtype_invalid_indexes];
+                invalid_lexemes.push(line_lexemes_vec[lexeme_real_index].to_string());
+            }
+        }
 
-                println!("{}", line_lexemes_vec[lexeme_real_index]);
+        match incompatible_dtype {
+            Some(invalid_type) => {
+                ErrSem_counter += 1;
+                println!("Token: ErrSem{}, Renglon: {}, Lexemas: {:?}, Descripcion: Incompatibilidad de tipos: {:?}", ErrSem_counter, line_counter, invalid_lexemes, invalid_type);
+            }
+            None => {
+                //println!("Renglon: {}, no tiene ningun lexema invalido", line_counter);
             }
         }
     }
 
-    //SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");
+    SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");
 
 }

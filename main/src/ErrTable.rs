@@ -21,8 +21,9 @@ pub fn assign_dtype(line_lexemes_vec: &Vec<String>, lexemes: &IndexSet<String>, 
             if lexeme == inline_lexeme {
                 let dtype = &lexeme_types[global_lexemes_index];
                 
-                if !(dtype == "") { // if it has a data type assigned (so a declared, valid identifier)
+                if !(dtype == "") { // if it has a data type assigned (so a declared, valid identifier, or a constant)
                     line_type_layout_vec.push(dtype.to_string());
+                    dtype_lexeme_index_mapping.insert(line_type_layout_vec.len() - 1, dtype_vec_index);
                 }
 
                 else { // if its either an operator (AOP) or an equal sign "=" (AS)
@@ -30,24 +31,15 @@ pub fn assign_dtype(line_lexemes_vec: &Vec<String>, lexemes: &IndexSet<String>, 
                         for token in token_vec {
                             if (inline_lexeme == &token.to_string()) && (*name == "AOP" || *name == "AS") {
                                 line_type_layout_vec.push(lexeme.to_string());
+                                dtype_lexeme_index_mapping.insert(line_type_layout_vec.len() - 1, dtype_vec_index);
                                 break;
                             }
                         }
                     }
                 }
-
-                if !(line_type_layout_vec.is_empty()) {
-                    dtype_lexeme_index_mapping.insert((line_type_layout_vec.len() - 1), dtype_vec_index);
-                }
-
                 break;
             }
         }      
-    }
-    
-   
-    for (dtypes_index, lexemes_index) in &dtype_lexeme_index_mapping {
-        println!("[{}]{:?} : [{}]{:?}", lexemes_index, line_lexemes_vec[*lexemes_index], dtypes_index, line_type_layout_vec[*dtypes_index]);
     }
 
     return (line_type_layout_vec, dtype_lexeme_index_mapping);

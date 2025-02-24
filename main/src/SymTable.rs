@@ -3,7 +3,18 @@ use indexmap::IndexSet;
 use regex::Regex;
 use std::fs::write;
 
-pub fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> (bool, String) {
+pub fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>, inside_string: &mut bool) -> (bool, String) {
+
+    if c == '"' {
+        *inside_string = !*inside_string;
+        return (false, "".to_string()); // Dont end the lexeme on quote (as they mark the start of the string)
+    }
+
+    // If inside a string, dont split on spaces or other separators
+    if *inside_string {
+        return (false, "".to_string());
+    }
+
     for (token_type, lex_list) in token_map {
 
         //Checks for possible "end-lexeme" indicating characters; add to the condition as needed
@@ -23,10 +34,11 @@ pub fn generate_lexeme_table_as_vec(line: &str, token_map: &HashMap<&str, Vec<ch
 
     let mut lexeme_set: Vec<String> = vec![];
     let mut lexeme: String = String::new();
+    let mut inside_string = false;
 
     //Iterates over the string (line sample)
     for c in line.chars() {
-        let (end_of_lexeme, token_type) = is_end_of_lex(c, token_map);
+        let (end_of_lexeme, token_type) = is_end_of_lex(c, token_map, &mut inside_string);
 
         if end_of_lexeme {
 
@@ -109,11 +121,11 @@ pub fn write_out_sym_table(lexemes: IndexSet<String>, lexeme_types: Vec<String>,
     
     let mut output_str = String::new();
     output_str.push_str("Table of Symbols:\n\n");
-    output_str.push_str(&format!("{:<15}\t{}\n", "Lexeme", "Type"));
-    output_str.push_str(&format!("{:-<15}\t{:-<10}\n", "", ""));
+    output_str.push_str(&format!("{:<25}\t{}\n", "Lexeme", "Type"));
+    output_str.push_str(&format!("{:-<25}\t{:-<10}\n", "", ""));
     
     for (lex, dtype) in lexemes.iter().zip(lexeme_types.iter()) {
-        output_str.push_str(&format!("{:<15}\t{}\n", lex, dtype));
+        output_str.push_str(&format!("{:<25}\t{}\n", lex, dtype));
     }
     
     write(path, output_str).expect("Unable to write file");

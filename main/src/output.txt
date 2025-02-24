@@ -1,17 +1,37 @@
 Table of Symbols:
 
-Lexeme         	Type
----------------	----------
-!s             	
-s.test         	!s
-;              	
-!i             	
-i.entero       	!i
-=              	
-1              	!i
-!f             	
-f.line2        	!f
-5              	!i
-i.line3        	
-+              	
-2              	!i
+Lexeme                   	Type
+-------------------------	----------
+!i                       	
+i.numerito               	!i
+,                        	
+i.otronumerito           	!i
+i.numerote               	!i
+;                        	
+!f                       	
+f.realnumerito           	!f
+f.otronumeritoreal       	!f
+f.numerotereal           	!f
+!s                       	
+s.cadenita               	!s
+s.otracadenita           	!s
+s.cadenota               	!s
+=                        	
+"Hola soy cadenita"      	!s
+10.2                     	!f
+2                        	!i
+1                        	!i
+*                        	
+"hola"                   	!s
++                        	
+"adios"                  	!s
+-                        	
+/                        	
+"Errorcito"              	!s
+"Error"                  	!s
+i.noexiste               	undefined
+f.tampocoexiste          	undefined
+s.nohay                  	undefined
+"texto"                  	!s
+f.nodefinido             	undefined
+3.14159                  	!f

@@ -19,9 +19,9 @@ pub fn is_end_of_lex(c: char, token_map: &HashMap<&str, Vec<char>>) -> (bool, St
     return (false, "".to_string());
 }
 
-pub fn generate_lexeme_table(line: &str, token_map: &HashMap<&str, Vec<char>>) -> IndexSet<String> {
+pub fn generate_lexeme_table_as_vec(line: &str, token_map: &HashMap<&str, Vec<char>>) -> Vec<String> {
 
-    let mut lexeme_set: IndexSet<String> = IndexSet::new();
+    let mut lexeme_set: Vec<String> = vec![];
     let mut lexeme: String = String::new();
 
     //Iterates over the string (line sample)
@@ -32,14 +32,14 @@ pub fn generate_lexeme_table(line: &str, token_map: &HashMap<&str, Vec<char>>) -
 
             //Checks if lexeme isnt empty to avoid inserting empty string
             if !lexeme.is_empty() {
-                lexeme_set.insert(lexeme.clone());
+                lexeme_set.push(lexeme.clone());
                 lexeme.clear();
             }
     
             //Inserts separator as lexeme if its not a space
             if token_type != "SPACE" {
                 lexeme.push(c);
-                lexeme_set.insert(lexeme.clone());
+                lexeme_set.push(lexeme.clone());
                 lexeme.clear();
             }
         }
@@ -51,7 +51,7 @@ pub fn generate_lexeme_table(line: &str, token_map: &HashMap<&str, Vec<char>>) -
 
     // Inserts any leftover lexeme
     if !lexeme.is_empty() {
-        lexeme_set.insert(lexeme);
+        lexeme_set.push(lexeme);
     }
     
     return lexeme_set;
@@ -67,12 +67,12 @@ pub fn generate_lexeme_type(lexeme_set: &IndexSet<String>, valid_regex_map: &Has
         for (data_type, re) in valid_regex_map.iter() {
             if re.is_match(lexeme) {
                 matched_type = data_type.to_string();
-                break; // Stop at first match
+                break; // Stop at first match to prevent going through the whole loop
             }
         }
 
-        // If no type found, check if it's an identifier (x.y format)
-        if matched_type.is_empty() && lexeme.contains('.') {
+        // If no type found, check if it's an identifier (x.xyz format) (ONLY FOR LINE CAT = DEC)
+        if matched_type.is_empty() && lexeme.contains('.'){
             matched_type = "ID".to_string();
         }
 

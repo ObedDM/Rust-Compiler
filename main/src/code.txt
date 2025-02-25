@@ -13,7 +13,7 @@ i.numerito = i.otronumerito - i.numerote;
 
 
 
-s.otracadenita = "hola" + 2;
+s.otracadenita = "hola" + 2 / 5.5 % i.nodef - s.nom;
 i.numerito= i.otronumerito * f.realnumerito;
 i.numerito= i.otronumerito / i.numerote;
 
@@ -27,5 +27,5 @@ i.numerito = i.noexiste + i.numerote;
 f.realnumerito = f.numerotereal * f.tampocoexiste;
 
 
-s.nohay = "texto";
+s.nohay = "texto" + s.menos;
 f.nodefinido = 3.14159;

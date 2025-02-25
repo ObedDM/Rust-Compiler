@@ -27,11 +27,16 @@ s.cadenota               	!s
 "adios"                  	!s
 -                        	
 /                        	
+5.5                      	!f
+%                        	
+i.nodef                  	undefined
+s.nom                    	undefined
 "Errorcito"              	!s
 "Error"                  	!s
 i.noexiste               	undefined
 f.tampocoexiste          	undefined
 s.nohay                  	undefined
 "texto"                  	!s
+s.menos                  	undefined
 f.nodefinido             	undefined
 3.14159                  	!f

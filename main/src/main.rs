@@ -19,6 +19,9 @@ fn main() {
 
     let mut contents = String::new();
     file.read_to_string(&mut contents).expect("File cannot be read");
+
+    // Creates new ErrTable file (overwrites if it exists)
+    File::create("ErrTable.txt").expect("Unable to clear file");
     
 
     /*let window: AppWindow = AppWindow::new()?;
@@ -90,6 +93,7 @@ fn main() {
     let mut line_counter: u16 = 0;
 
     let mut ErrSem_counter: u16 = 0;
+    let mut ErrSem_flag: bool = false; 
 
     for test_string in multiple_lines_test.lines() {
 
@@ -145,24 +149,16 @@ fn main() {
         // Handles duplicated type asignment between lexeme and lexeme_types
         SymTable::handle_duplicate_lexemes(&line_lexemes, &line_lexeme_types, &mut lexemes, &mut lexeme_types);
 
-        // Check if theres any undefined variable  
         let mut undefined_identifier_flag: bool = false;
-        let mut undefined_lexemes: Vec<String> = vec![];        
+        let mut undefined_lexemes: Vec<String> = vec![];    
 
-        for inline_lexeme in &line_lexemes {
-            for (index_global_lexeme, global_lexeme) in lexemes.iter().enumerate() {
-                
-                if (inline_lexeme == global_lexeme) && (lexeme_types[index_global_lexeme] == "undefined") {
-                    ErrSem_counter += 1;
-                    undefined_lexemes.push(inline_lexeme.to_string());
-                    undefined_identifier_flag = true;
-                }
-            }
-        }
-
-        if undefined_identifier_flag { // If theres an undefined lexeme, passes onto next line and creates register into Error Table (above)
-            println!("Token: ErrSem{}, Renglon: {}, Lexemas: {:?}, Descripcion: Variable indefinida", ErrSem_counter, line_counter, undefined_lexemes);
-            continue;
+        (undefined_identifier_flag, undefined_lexemes, ErrSem_flag) = ErrTable::check_undefined(&line_lexemes, &lexemes, &lexeme_types, &mut ErrSem_flag);
+        
+        if undefined_identifier_flag && ErrSem_flag { // If theres an undefined lexeme, passes onto next line and creates register into Error Table (above)
+            ErrSem_counter += 1;
+            ErrTable::write_to_err_table("ErrTable.txt", &format!("Err{}", ErrSem_counter), &undefined_lexemes, line_counter, "variable indefinida");
+            println!("Token: Err{}, Renglon: {}, Lexemas: {:?}, Descripcion: Variable indefinida", ErrSem_counter, line_counter, undefined_lexemes);
+            //continue;
         }
 
 
@@ -198,7 +194,8 @@ fn main() {
         match incompatible_dtype {
             Some(invalid_type) => {
                 ErrSem_counter += 1;
-                println!("Token: ErrSem{}, Renglon: {}, Lexemas: {:?}, Descripcion: Incompatibilidad de tipos: {:?}", ErrSem_counter, line_counter, invalid_lexemes, invalid_type);
+                ErrTable::write_to_err_table("ErrTable.txt", &format!("Err{}", ErrSem_counter), &invalid_lexemes, line_counter, &format!("Incompatibilidad de tipos, {}", invalid_type));
+                println!("Token: Err{}, Renglon: {}, Lexemas: {:?}, Descripcion: Incompatibilidad de tipos: {}", ErrSem_counter, line_counter, invalid_lexemes, invalid_type);
             }
             None => {
                 //println!("Renglon: {}, no tiene ningun lexema invalido", line_counter);
@@ -206,6 +203,6 @@ fn main() {
         }
     }
 
-    SymTable::write_out_sym_table(lexemes, lexeme_types, "output.txt");
+    SymTable::write_out_sym_table(lexemes, lexeme_types, "SymTable.txt");
 
 }

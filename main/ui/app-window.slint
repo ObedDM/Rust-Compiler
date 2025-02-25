@@ -1,15 +1,16 @@
-import { LineEdit, Button } from "std-widgets.slint";
+import { LineEdit, Button, TextEdit } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
     in property <string> data-out: "";
 
     callback is_correct(string);
+    callback probar_codigo(string);
 
-    min-width: 400px;
+    min-width: 700px;
     preferred-width: self.min-width;
     max-width: 1920px;
 
-    min-height: 400px;
+    min-height: 900px;
     preferred-height: self.min-height;
     max-height: 1080px;
 
@@ -20,7 +21,7 @@ export component AppWindow inherits Window {
 
         Row {
             Text {
-                text: "Match this expression!\n[A-Za-z]\\.[a-z$!?_]*";
+                text: "Expresion regular: \n[A-Za-z]\\.[a-z$!?_]*";
                 font-size: 20px;
                 font-weight: 750;
                 horizontal-alignment: center;
@@ -34,7 +35,7 @@ export component AppWindow inherits Window {
                 max-height: 80px;
 
                 Text {
-                    text: "input: ";
+                    text: "Expresion: ";
                     font-size: 15px;
                     font-weight: 500;
                     horizontal-alignment: left;
@@ -48,7 +49,7 @@ export component AppWindow inherits Window {
                     height: 60px;
 
                     input := LineEdit {
-                        placeholder-text: "s.example";
+                        placeholder-text: "s.ejemplo";
                         width: parent.width;
                         height: parent.height;
                     }
@@ -61,7 +62,7 @@ export component AppWindow inherits Window {
                 max-height: 80px;
                 
                 Text {
-                    text: "output: ";
+                    text: "Resultado (Expresion): ";
                     font-size: 15px;
                     font-weight: 500;
                     horizontal-alignment: left;
@@ -87,7 +88,6 @@ export component AppWindow inherits Window {
         }
 
         Row {
-
             Rectangle {
                 background: black;
                 border-color: yellow;
@@ -96,10 +96,59 @@ export component AppWindow inherits Window {
                 height: 60px;
 
                 Button {
-                    text: "Try";
+                    text: "Checar expresion";
                     width: parent.width * 0.97;
                     height: parent.height * 0.8;
-                    clicked => { is_correct(input.text); }  
+                    clicked => { 
+                        // Validate expression input
+                        is_correct(input.text);
+                    }  
+                }
+            }
+        }
+
+        Row {
+            VerticalLayout {
+                max-height: 200px;
+
+                Text {
+                    text: "Codigo de entrada: ";
+                    font-size: 15px;
+                    font-weight: 500;
+                    horizontal-alignment: left;
+                }
+
+                Rectangle {
+                    background: black;
+                    border-color: gray;
+                    border-radius: 4px;
+                    width: root.width * 0.8;
+                    height: 400px;
+
+                    code_input := TextEdit {
+                        placeholder-text: "Escribir codigo...";
+                        width: parent.width;
+                        height: parent.height;
+                    }
+                }
+            }
+        }
+
+        Row {
+            Rectangle {
+                background: black;
+                border-color: yellow;
+                border-radius: 4px;
+                width: root.width * 0.8;
+                height: 60px;
+
+                Button {
+                    text: "Probar codigo";
+                    width: parent.width * 0.97;
+                    height: parent.height * 0.8;
+                    clicked => { 
+                        probar_codigo(code_input.text);
+                    }
                 }
             }
         }

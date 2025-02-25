@@ -13,38 +13,49 @@ mod ErrTable;
 
 slint::include_modules!();
 
-fn main() {
+fn is_valid_identifier(identifier: &str) -> bool {
+    let regex: &str = "^[A-Za-z]\\.[a-z$!?_]*$";
+    let re = Regex::new(regex).unwrap();
 
-    let mut file: File = File::open("code.txt").expect("File not found or cant be opened");
+    if re.is_match(identifier)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).expect("File cannot be read");
+fn main() -> Result<(), Box<dyn std::error::Error>>{  
 
-    // Creates new ErrTable file (overwrites if it exists)
-    File::create("ErrTable.txt").expect("Unable to clear file");
-    
-
-    /*let window: AppWindow = AppWindow::new()?;
+    let window: AppWindow = AppWindow::new()?;
     let window_weak = window.as_weak();
 
     window.on_is_correct(move | user_input | {
         let window = window_weak.unwrap();
         
-        let result: String = is_valid_identifier(user_input.to_string());   
+        let result: String = is_valid_identifier(user_input.as_str()).to_string();   
         window.set_data_out(result.into());
     });
+
+    window.on_probar_codigo(move |code_input| {
+
+    let mut contents = code_input.to_string();
+
+    let mut file = std::fs::OpenOptions::new().create(true).write(true).truncate(true).open("code.txt").unwrap();
+    writeln!(file, "{}", contents).unwrap();
+
+
+
+    // Empieza la logica del programa
+    let mut file: File = File::open("code.txt").expect("File not found or cant be opened");
+
     
-    window.run();
-    Ok(())*/
+    // Creates new ErrTable file (overwrites if it exists)
+    File::create("ErrTable.txt").expect("Unable to clear file");
 
-    /*let mut symbol_table: HashMap<char, &str> = HashMap::new();
-
-    let mut tokens: HashMap<&str, Vec<&str>> = HashMap::new();
-
-    tokens.insert("DEL", vec![";"]);
-    tokens.insert("OPA", vec!["+", "-", "*", "/"]);*/
-
-    //Define regex type match
+    //Define regex type to match
     let valid_regex_type_match: HashMap<&str, Regex> = HashMap::from([
         ("ID", Regex::new("^[A-Za-z]\\.[a-z$!?_]*$").unwrap()),
         ("!s", Regex::new("^\".*\"$").unwrap()),
@@ -157,7 +168,7 @@ fn main() {
         if undefined_identifier_flag && ErrSem_flag { // If theres an undefined lexeme, passes onto next line and creates register into Error Table (above)
             ErrSem_counter += 1;
             ErrTable::write_to_err_table("ErrTable.txt", &format!("Err{}", ErrSem_counter), &undefined_lexemes, line_counter, "variable indefinida");
-            println!("Token: Err{}, Renglon: {}, Lexemas: {:?}, Descripcion: Variable indefinida", ErrSem_counter, line_counter, undefined_lexemes);
+            //println!("Token: Err{}, Renglon: {}, Lexemas: {:?}, Descripcion: Variable indefinida", ErrSem_counter, line_counter, undefined_lexemes);
             //continue;
         }
 
@@ -195,7 +206,7 @@ fn main() {
             Some(invalid_type) => {
                 ErrSem_counter += 1;
                 ErrTable::write_to_err_table("ErrTable.txt", &format!("Err{}", ErrSem_counter), &invalid_lexemes, line_counter, &format!("Incompatibilidad de tipos, {}", invalid_type));
-                println!("Token: Err{}, Renglon: {}, Lexemas: {:?}, Descripcion: Incompatibilidad de tipos: {}", ErrSem_counter, line_counter, invalid_lexemes, invalid_type);
+                //println!("Token: Err{}, Renglon: {}, Lexemas: {:?}, Descripcion: Incompatibilidad de tipos: {}", ErrSem_counter, line_counter, invalid_lexemes, invalid_type);
             }
             None => {
                 //println!("Renglon: {}, no tiene ningun lexema invalido", line_counter);
@@ -205,4 +216,9 @@ fn main() {
 
     SymTable::write_out_sym_table(lexemes, lexeme_types, "SymTable.txt");
 
+    });
+    
+    window.run();
+
+    Ok(())
 }
